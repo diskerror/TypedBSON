@@ -2,7 +2,7 @@
 
 namespace Tweet\Entity;
 
-use Diskerror\Typed\{TypedClass, TypedArray};
+use Diskerror\TypedBSON\{TypedClass, TypedArray};
 
 class UserMention extends TypedClass
 {

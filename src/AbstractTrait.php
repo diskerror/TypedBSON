@@ -31,7 +31,7 @@ trait AbstractTrait
 	 * @var int
 	 */
 	protected $_bsonOptionDefaults =
-		ArrayOptions::OMIT_EMPTY | ArrayOptions::OMIT_RESOURCE | ArrayOptions::NO_CAST_BSON;
+		ArrayOptions::OMIT_EMPTY | ArrayOptions::OMIT_RESOURCE | ArrayOptions::NO_CAST_BSON | ArrayOptions::CAST_DATETIME_TO_BSON;
 
 	protected function _initArrayOptions()
 	{

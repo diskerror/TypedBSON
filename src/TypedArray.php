@@ -9,9 +9,6 @@
 
 namespace Diskerror\TypedBSON;
 
-use Diskerror\Typed\ArrayOptions;
-use Diskerror\Typed\AtomicInterface;
-use Diskerror\Typed\TypedAbstract;
 use Diskerror\Typed\TypedArray as TA;
 use MongoDB\BSON\Persistable;
 

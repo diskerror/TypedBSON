@@ -6,7 +6,7 @@ use Diskerror\Typed\DateTime;
 
 trait TweetTrait {
 
-	protected $created_at                = [DateTime::class, '2018-07-18 17:10:28'];
+	protected $created_at                = [DateTime::class, '2018-07-18 17:10:28.000-08:00'];
 
 	protected $contributors              = null;
 

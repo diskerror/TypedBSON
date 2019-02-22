@@ -2,7 +2,7 @@
 
 require 'Tweet/TweetTrait.php';
 
-use Diskerror\Typed\TypedClass;
+use Diskerror\TypedBSON\TypedClass;
 use Tweet\ReTweet;
 use Tweet\TweetTrait;
 

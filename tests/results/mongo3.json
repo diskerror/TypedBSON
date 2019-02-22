@@ -2,7 +2,7 @@
 	"retweeted_status": {
 		"created_at": {
 			"$date": {
-				"$numberLong": "1531933828000"
+				"$numberLong": "1531962628000"
 			}
 		},
 		"filter_level": "low",
@@ -18,7 +18,7 @@
 	},
 	"created_at": {
 		"$date": {
-			"$numberLong": "1531933828000"
+			"$numberLong": "1531962628000"
 		}
 	},
 	"filter_level": "low",

@@ -2,7 +2,7 @@
 
 namespace Tweet;
 
-use Diskerror\Typed\TypedClass;
+use Diskerror\TypedBSON\TypedClass;
 
 class ReTweet extends TypedClass
 {
