@@ -21,7 +21,7 @@
 	],
 	"require": {
 		"php": ">=7.1",
-		"diskerror/typed": "dev-master",
+		"diskerror/typed": "0.7.6",
 		"mongodb/mongodb": "^1.4"
 	},
 	"require-dev": {
