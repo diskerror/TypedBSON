@@ -5,7 +5,9 @@
 	"keywords": [
 		"type",
 		"structure",
-		"struct"
+		"struct",
+		"BSON",
+		"Mongo"
 	],
 	"homepage": "https://github.com/diskerror/TypedBSON",
 	"license": "Apache-2.0",
