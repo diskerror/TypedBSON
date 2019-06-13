@@ -81,7 +81,7 @@ class TypedArray extends TA implements Persistable
 	 *
 	 * @return void
 	 */
-	public function unserialize($serialized)
+	public function unserialize($serialized): void
 	{
 		$data = unserialize($serialized);
 
