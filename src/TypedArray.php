@@ -19,6 +19,40 @@ use MongoDB\BSON\Persistable;
  */
 class TypedArray extends TA implements Persistable
 {
+	/**
+	 * Constructor.
+	 *
+	 * This allows for initial values to be passed in the first parameter.
+	 * This is only works for children of this class where the type has already
+	 * been set.
+	 *
+	 * @param mixed             $type   OPTIONAL ''
+	 * @param array|object|null $values OPTIONAL null
+	 */
+	public function __construct($type = '', $values = null)
+	{
+		if (get_called_class() !== self::class) {
+			if (!isset($this->_type)) {
+				throw new InvalidArgumentException('$this->_type must be set in child class.');
+			}
+
+			if (null !== $values) {
+				throw new InvalidArgumentException('Only the first parameter can be set when using an inherited class.');
+			}
+
+			// Assume the first parameter holds the values and the second is unset.
+			$values = $type;
+		}
+		else {
+			$this->_type = $type;
+		}
+
+		$this->_initArrayOptions();
+		$this->_initMetaData();
+
+		$this->assign($values);
+	}
+
 	use AbstractTrait;
 
 	/**
