@@ -44,7 +44,7 @@ class TypedArray extends TA implements Persistable
 			$values = $type;
 		}
 		else {
-			$this->_type = $type;
+			$this->_type = (string)$type;
 		}
 
 		$this->_initArrayOptions();
