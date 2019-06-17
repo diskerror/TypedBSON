@@ -6,6 +6,7 @@
 		"type",
 		"structure",
 		"struct",
+		"cast",
 		"BSON",
 		"Mongo"
 	],
