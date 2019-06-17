@@ -35,8 +35,7 @@ trait AbstractTrait
 
 	protected function _initArrayOptions()
 	{
-		$this->_arrayOptions = new ArrayOptions($this->_arrayOptionDefaults);
-		$this->_jsonOptions  = new ArrayOptions($this->_jsonOptionDefaults);
+		parent::_initArrayOptions();
 		$this->_bsonOptions  = new ArrayOptions($this->_bsonOptionDefaults);
 	}
 
