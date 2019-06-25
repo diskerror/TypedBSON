@@ -1,6 +1,7 @@
 <?php
 
 use function MongoDB\BSON\fromPHP;
+use MongoDB\BSON\UTCDateTime;
 
 class MongoTest extends PHPUnit\Framework\TestCase
 {
@@ -12,14 +13,14 @@ class MongoTest extends PHPUnit\Framework\TestCase
 
 //		jsonPrint($tweet->toArray());exit;
 		$this->assertJsonStringEqualsJsonFile(
-			__DIR__.'/results/mongo1.json',
+			__DIR__ . '/results/mongo1.json',
 			json_encode($tweet->toArray())
 		);
 
 		//	"jsonSerialize" is automatically called by json_encode.
 //		jsonPrint($tweet->jsonSerialize());exit;
 		$this->assertJsonStringEqualsJsonFile(
-			__DIR__.'/results/mongo2.json',
+			__DIR__ . '/results/mongo2.json',
 			json_encode($tweet->jsonSerialize())
 		);
 
@@ -28,7 +29,7 @@ class MongoTest extends PHPUnit\Framework\TestCase
 //		var_export($tweet->bsonSerialize());exit;
 //		file_put_contents(__DIR__.'/results/mongo3.php', var_export($tweet->bsonSerialize(), true));exit;
 		$this->assertStringEqualsFile(
-			__DIR__.'/results/mongo3.php',
+			__DIR__ . '/results/mongo3.php',
 			var_export($tweet->bsonSerialize(), true)
 		);
 		/**
@@ -71,6 +72,25 @@ class MongoTest extends PHPUnit\Framework\TestCase
 		$this->assertJsonStringEqualsJsonFile(
 			__DIR__ . '/results/mongo_config.json',
 			json_encode($config->toArray())
+		);
+	}
+
+	public function testBsonDate()
+	{
+		$mbdt = new UTCDateTime(1561431851340);
+		$dt   = new \Diskerror\TypedBSON\DateTime(1561431851.34);
+
+		$this->assertEquals(
+			$dt->format(\Diskerror\TypedBSON\DateTime::STRING_IO_FORMAT_MICRO),
+			$mbdt->toDateTime()->format(\Diskerror\TypedBSON\DateTime::STRING_IO_FORMAT_MICRO)
+		);
+
+		$mbdt2 = new UTCDateTime(1561431851340);
+		$dt2   = new \Diskerror\TypedBSON\DateTime($mbdt2);
+
+		$this->assertEquals(
+			$dt2->format(\Diskerror\TypedBSON\DateTime::STRING_IO_FORMAT_MICRO),
+			$mbdt2->toDateTime()->format(\Diskerror\TypedBSON\DateTime::STRING_IO_FORMAT_MICRO)
 		);
 	}
 
