@@ -13,11 +13,10 @@ namespace Diskerror\TypedBSON;
 use DateTimeInterface;
 use Diskerror\Typed\ArrayOptions;
 use Diskerror\Typed\Date;
-use Diskerror\Typed\TypedClass as TC;
 use MongoDB\BSON\ObjectId;
 use MongoDB\BSON\UTCDateTime;
 
-abstract class TypedClass extends TC
+abstract class TypedClass extends \Diskerror\Typed\TypedClass
 {
 	use AbstractTrait;
 

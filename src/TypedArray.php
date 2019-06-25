@@ -9,7 +9,6 @@
 
 namespace Diskerror\TypedBSON;
 
-use Diskerror\Typed\TypedArray as TA;
 use MongoDB\BSON\Persistable;
 
 /**
@@ -17,7 +16,7 @@ use MongoDB\BSON\Persistable;
  * If type is defined as null then any element can have any type but
  *      deep copying of objects is always available.
  */
-class TypedArray extends TA implements Persistable
+class TypedArray extends \Diskerror\Typed\TypedArray implements Persistable
 {
 	/**
 	 * Constructor.
