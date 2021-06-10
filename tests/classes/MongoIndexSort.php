@@ -1,4 +1,7 @@
 <?php
+
+use Diskerror\Typed\Scalar\TInteger;
+
 /**
  * Created by PhpStorm.
  * User: 3525339
@@ -6,7 +9,7 @@
  * Time: 2:59 PM
  */
 
-class MongoIndexSort extends \Diskerror\Typed\SAInteger
+class MongoIndexSort extends TInteger
 {
 	/**
 	 * MongoIndexSort constructor.

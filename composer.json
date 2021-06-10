@@ -39,6 +39,8 @@
 			"tests/classes/"
 		],
 		"psr-4": {
+			"Tweet\\": "tests/classes/Tweet/",
+			"Tweet\\Entity\\": "tests/classes/Tweet/Entity/"
 		}
 	}
 }

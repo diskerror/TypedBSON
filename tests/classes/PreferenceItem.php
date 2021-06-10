@@ -14,7 +14,7 @@ class PreferenceItem extends Diskerror\Typed\TypedClass
 
 	protected function _set_boolean($v)
 	{
-		//	These will have been cast to a SAString object.
+		//	These will have been cast to a TString object.
 		$this->boolean->set(strtoupper(preg_replace('/(' . self::BOOLEAN . ')/i', '$1', $v)));
 	}
 
