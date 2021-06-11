@@ -9,6 +9,7 @@
 
 namespace Diskerror\TypedBSON;
 
+use InvalidArgumentException;
 use MongoDB\BSON\Persistable;
 
 /**
@@ -18,6 +19,34 @@ use MongoDB\BSON\Persistable;
  */
 class TypedArray extends \Diskerror\Typed\TypedArray implements Persistable
 {
+	/**
+	 * Constructor.
+	 *
+	 * If this class is instantiated directly, ie. "$a = new TypedArray('integer', [1, 2, 3]);",
+	 * then $param1 must be the data type as a string, and then $param2 can be the initial data.
+	 *
+	 * If a derived class is instantiated then the data type must be contained in
+	 * the class, ie. "protected $_type = 'integer';", and $param1 can be the initial data.
+	 *
+	 * @param mixed             $param1 OPTIONAL ""
+	 * @param array|object|null $param2 OPTIONAL null
+	 *
+	 * @throws InvalidArgumentException
+	 */
+	public function __construct($param1 = '', $param2 = null)
+	{
+		$this->_initArrayOptions();
+
+		if (get_called_class() === self::class) {
+			$this->_type = (string) $param1;
+		}
+		elseif (!isset($this->_type)) {
+			throw new InvalidArgumentException('$this->_type must be set in child class.');
+		}
+
+		parent::__construct($param1, $param2);
+	}
+
 	use AbstractTrait;
 
 	/**
