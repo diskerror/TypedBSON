@@ -34,9 +34,11 @@ class TypedArray extends \Diskerror\Typed\TypedArray implements Persistable
 	{
 		if (get_called_class() === self::class) {
 			$this->_type = (string) $param1;
+			parent::__construct($param2);
 		}
-
-		parent::__construct($param2);
+		else {
+			parent::__construct($param1, $param2);
+		}
 	}
 
 	use AbstractTrait;
