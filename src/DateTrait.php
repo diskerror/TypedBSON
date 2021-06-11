@@ -4,7 +4,7 @@
 namespace Diskerror\TypedBSON;
 
 
-use function gettype;
+use DateTime;
 use MongoDB\BSON\UTCDateTimeInterface;
 
 trait DateTrait
@@ -17,7 +17,12 @@ trait DateTrait
 	public function _initCheckBson(&$time)
 	{
 		if (is_object($time) && $time instanceof UTCDateTimeInterface) {
-			$time = (float)$time->__toString() / 1000;
+			$time = (float) $time->__toString() / 1000;
+		}
+
+		if (is_string($time) && $time[0] !== '@') {
+//					Twitter:	Thu Jun 10 05:24:16 + 0000 2021
+			$tmp = DateTime::createFromFormat('D m d H:m:s + Z Y', $time);
 		}
 	}
 }
