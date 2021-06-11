@@ -9,7 +9,6 @@
 
 namespace Diskerror\TypedBSON;
 
-use InvalidArgumentException;
 use MongoDB\BSON\Persistable;
 
 /**
@@ -30,18 +29,14 @@ class TypedArray extends \Diskerror\Typed\TypedArray implements Persistable
 	 *
 	 * @param mixed             $param1 OPTIONAL ""
 	 * @param array|object|null $param2 OPTIONAL null
-	 *
-	 * @throws InvalidArgumentException
 	 */
 	public function __construct($param1 = '', $param2 = null)
 	{
-		$this->_initArrayOptions();
-
 		if (get_called_class() === self::class) {
 			$this->_type = (string) $param1;
 		}
 
-		parent::__construct($param1, $param2);
+		parent::__construct($param2);
 	}
 
 	use AbstractTrait;
