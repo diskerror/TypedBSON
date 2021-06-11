@@ -40,9 +40,6 @@ class TypedArray extends \Diskerror\Typed\TypedArray implements Persistable
 		if (get_called_class() === self::class) {
 			$this->_type = (string) $param1;
 		}
-		elseif (!isset($this->_type)) {
-			throw new InvalidArgumentException('$this->_type must be set in child class.');
-		}
 
 		parent::__construct($param1, $param2);
 	}
