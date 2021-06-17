@@ -22,7 +22,7 @@ trait DateTrait
 
 		if (is_string($time) && $time[0] !== '@') {
 //					Twitter:	Thu Jun 10 05:24:16 + 0000 2021
-			$tmp = DateTime::createFromFormat('D m d H:m:s + Z Y', $time);
+			$time = DateTime::createFromFormat('D m d H:m:s + Z Y', $time);
 		}
 	}
 }

@@ -18,6 +18,13 @@ use MongoDB\BSON\UTCDateTime;
 
 abstract class TypedClass extends \Diskerror\Typed\TypedClass
 {
+	/**
+	 * Holds default options for "toArray" customizations when used by json_encode.
+	 *
+	 * @var int
+	 */
+	protected $_jsonOptionDefaults = ArrayOptions::SET_ALL_YES;
+
 	use AbstractTrait;
 
 	/**
