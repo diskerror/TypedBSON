@@ -2,7 +2,7 @@
 
 namespace Tweet;
 
-use Diskerror\Typed\DateTime;
+use Diskerror\TypedBSON\DateTime;
 
 trait TweetTrait {
 

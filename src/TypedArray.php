@@ -18,6 +18,8 @@ use MongoDB\BSON\Persistable;
  */
 class TypedArray extends \Diskerror\Typed\TypedArray implements Persistable
 {
+	use TypedTrait;
+
 	/**
 	 * Constructor.
 	 *
@@ -41,8 +43,6 @@ class TypedArray extends \Diskerror\Typed\TypedArray implements Persistable
 		}
 	}
 
-	use AbstractTrait;
-
 	/**
 	 * String representation of object.
 	 *
@@ -55,7 +55,6 @@ class TypedArray extends \Diskerror\Typed\TypedArray implements Persistable
 			'_type'         => $this->_type,
 			'_arrayOptions' => $this->_arrayOptions,
 			'_jsonOptions'  => $this->_jsonOptions,
-			'_bsonOptions'  => $this->_bsonOptions,
 			'_container'    => $this->_container,
 		]);
 	}
@@ -76,8 +75,17 @@ class TypedArray extends \Diskerror\Typed\TypedArray implements Persistable
 		$this->_type         = $data['_type'];
 		$this->_arrayOptions = $data['_arrayOptions'];
 		$this->_jsonOptions  = $data['_jsonOptions'];
-		$this->_bsonOptions  = $data['_bsonOptions'];
 		$this->_container    = $data['_container'];
+	}
+
+	/**
+	 * Called automatically by MongoDB.
+	 *
+	 * @return array
+	 */
+	public function bsonSerialize(): array
+	{
+		return $this->_toArray($this->_jsonOptions);
 	}
 
 	/**

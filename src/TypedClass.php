@@ -11,21 +11,13 @@
 namespace Diskerror\TypedBSON;
 
 use DateTimeInterface;
-use Diskerror\Typed\ArrayOptions;
 use Diskerror\Typed\Date;
 use MongoDB\BSON\ObjectId;
 use MongoDB\BSON\UTCDateTime;
 
 abstract class TypedClass extends \Diskerror\Typed\TypedClass
 {
-	/**
-	 * Holds default options for "toArray" customizations when used by json_encode.
-	 *
-	 * @var int
-	 */
-	protected $_jsonOptionDefaults = ArrayOptions::SET_ALL_YES;
-
-	use AbstractTrait;
+	use TypedTrait;
 
 	/**
 	 * String representation of PHP object.
@@ -51,6 +43,56 @@ abstract class TypedClass extends \Diskerror\Typed\TypedClass
 	}
 
 	/**
+	 * Called automatically by MongoDB.
+	 *
+	 * @return array
+	 */
+	public function bsonSerialize(): array
+	{
+		/** @var array $arr */
+		$arr = $this->_toArray($this->_jsonOptions);
+
+		if ($this->_bsonOptions->has(BsonOptions::NO_CAST_BSON | BsonOptions::CAST_DATETIME_TO_UTC)) {
+			foreach ($this->_getPublicNames() as $k) {
+				/**
+				 * MongoDB\BSON objects were converted above so put them back.
+				 */
+				if (
+					$this->_bsonOptions->has(BsonOptions::NO_CAST_BSON) &&
+					is_object($this->{$k}) &&
+					strpos(get_class($this->{$k}), 'MongoDB\\BSON') === 0
+				) {
+					$arr[$k] = $this->{$k};
+				}
+
+				/**
+				 * Convert all DateTimeInterface classes (except Typed\Date) into a UTCDateTime class.
+				 */
+				if (
+					$this->_bsonOptions->has(BsonOptions::CAST_DATETIME_TO_UTC) &&
+					$this->{$k} instanceof DateTimeInterface &&
+					!($this->{$k} instanceof Date)
+				) {
+					$arr[$k] = new UTCDateTime($this->{$k});
+				}
+			}
+		}
+
+		/**
+		 * Cast "_id" string or number into a MongoDB\BSON\ObjectId.
+		 */
+		if (
+			$this->_bsonOptions->has(BsonOptions::CAST_ID_TO_OBJECTID) &&
+			property_exists($this, '_id') &&
+			is_scalar($this->_id)
+		) {
+			$arr['_id'] = new ObjectId((string) $this->_id);
+		}
+
+		return $arr;
+	}
+
+	/**
 	 * Called automatically by MongoDB when a document has a field named
 	 * "__pclass".
 	 *
@@ -68,55 +110,5 @@ abstract class TypedClass extends \Diskerror\Typed\TypedClass
 		foreach ($this->_getPublicNames() as $publicName) {
 			$this->_setByName($publicName, array_key_exists($publicName, $data) ? $data[$publicName] : '');
 		}
-	}
-
-	/**
-	 * @param ArrayOptions $arrayOptions
-	 *
-	 * @return array
-	 */
-	protected function _toArray(ArrayOptions $arrayOptions): array
-	{
-		/** @var array $arr */
-		$arr = parent::_toArray($arrayOptions);
-
-		if ($arrayOptions->has(ArrayOptions::NO_CAST_BSON | ArrayOptions::CAST_DATETIME_TO_BSON)) {
-			foreach ($this->_getPublicNames() as $k) {
-				/**
-				 * MongoDB\BSON objects were converted above so put them back.
-				 */
-				if (
-					$arrayOptions->has(ArrayOptions::NO_CAST_BSON) &&
-					is_object($this->{$k}) &&
-					strpos(get_class($this->{$k}), 'MongoDB\\BSON') === 0
-				) {
-					$arr[$k] = $this->{$k};
-				}
-
-				/**
-				 * Convert all DateTimeInterface classes (except Typed\Date) into a UTCDateTime class.
-				 */
-				if (
-					$arrayOptions->has(ArrayOptions::CAST_DATETIME_TO_BSON) &&
-					$this->{$k} instanceof DateTimeInterface &&
-					!($this->{$k} instanceof Date)
-				) {
-					$arr[$k] = new UTCDateTime($this->{$k});
-				}
-			}
-		}
-
-		/**
-		 * Cast "_id" string or number into a MongoDB\BSON\ObjectId.
-		 */
-		if (
-			$arrayOptions->has(ArrayOptions::CAST_ID_TO_OBJECTID) &&
-			property_exists($this, '_id') &&
-			is_scalar($this->_id)
-		) {
-			$arr['_id'] = new ObjectId((string)$this->_id);
-		}
-
-		return $arr;
 	}
 }

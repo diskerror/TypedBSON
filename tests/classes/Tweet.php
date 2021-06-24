@@ -15,15 +15,6 @@ class Tweet extends TypedClass
 
 	protected $_id  = 0;
 
-	/**
-	 * Tweet constructor.
-	 */
-	public function __construct($in = null)
-	{
-		$this->_jsonOptionDefaults = ArrayOptions::SET_ALL_YES ^ ArrayOptions::CAST_DATETIME_TO_BSON;
-		\Diskerror\Typed\TypedClass::__construct($in);
-	}
-
 	use TweetTrait;
 
 	protected $retweeted_status = [ReTweet::class];
