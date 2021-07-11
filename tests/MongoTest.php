@@ -77,13 +77,13 @@ class MongoTest extends PHPUnit\Framework\TestCase
 
 	public function testBsonDate()
 	{
-//		$mbdt = new UTCDateTime(1561431851340);
-//		$dt   = new \Diskerror\TypedBSON\DateTime(1561431851.34);
-//
-//		$this->assertEquals(
-//			$dt->format(\Diskerror\TypedBSON\DateTime::STRING_IO_FORMAT_MICRO),
-//			$mbdt->toDateTime()->format(\Diskerror\TypedBSON\DateTime::STRING_IO_FORMAT_MICRO)
-//		);
+		$mbdt = new UTCDateTime(1561431851340);
+		$dt   = new \Diskerror\TypedBSON\DateTime(1561431851.34);
+
+		$this->assertEquals(
+			$dt->format(\Diskerror\TypedBSON\DateTime::STRING_IO_FORMAT_MICRO),
+			$mbdt->toDateTime()->format(\Diskerror\TypedBSON\DateTime::STRING_IO_FORMAT_MICRO)
+		);
 
 		$mbdt2 = new UTCDateTime(1561431851340);
 		$dt2   = new \Diskerror\TypedBSON\DateTime($mbdt2);

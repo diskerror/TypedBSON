@@ -8,7 +8,6 @@ use Diskerror\Typed\Scalar\TInteger;
  * Date: 12/10/2018
  * Time: 2:59 PM
  */
-
 class MongoIndexSort extends TInteger
 {
 	/**

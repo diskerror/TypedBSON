@@ -13,7 +13,7 @@ class Tweet extends TypedClass
 		'id' => '_id',    //	from Twitter
 	];
 
-	protected $_id  = 0;
+	protected $_id = 0;
 
 	use TweetTrait;
 

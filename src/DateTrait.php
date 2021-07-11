@@ -11,7 +11,7 @@ trait DateTrait
 	/**
 	 * Adds the ability to accept a Mongo\BSON\UTCDateTime object.
 	 *
-	 * @param mixed        $time
+	 * @param mixed $time
 	 */
 	public function _initCheckBson(&$time)
 	{

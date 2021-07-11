@@ -6,12 +6,12 @@ use Diskerror\TypedBSON\{TypedClass, TypedArray};
 
 class UserMention extends TypedClass
 {
-	protected $id          = '';
+	protected $id = '';
 
 	protected $screen_name = '';
 
-	protected $name        = '';
+	protected $name = '';
 
-	protected $indices     = [TypedArray::class, 'int'];
+	protected $indices = [TypedArray::class, 'int'];
 
 }

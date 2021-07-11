@@ -49,7 +49,6 @@ abstract class TypedClass extends \Diskerror\Typed\TypedClass
 	 */
 	public function bsonSerialize(): array
 	{
-		/** @var array $arr */
 		$arr = $this->_toArray($this->_jsonOptions);
 
 		if ($this->_bsonOptions->has(BsonOptions::NO_CAST_BSON | BsonOptions::CAST_DATETIME_TO_UTC)) {
