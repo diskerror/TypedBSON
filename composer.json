@@ -20,16 +20,21 @@
 			"role": "Developer"
 		}
 	],
+	"repositories": [
+		{
+			"type": "git",
+			"url": "../Typed"
+		}
+	],
 	"require": {
 		"php": ">=7.3",
 		"ext-json": "*",
-		"ext-mongodb": "^1.9.*",
-		"diskerror/typed": "0.8.*"
+		"ext-mongodb": "^1.9",
+		"diskerror/typed": "0.8.4.*"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "9.*",
-		"phpdocumentor/phpdocumentor": "3.*",
-		"diskerror/typed": "master"
+		"phpdocumentor/phpdocumentor": "3.*"
 	},
 	"autoload": {
 		"psr-4": {
@@ -37,12 +42,13 @@
 		}
 	},
 	"autoload-dev": {
-		"classmap": [
-			"tests/classes/"
-		],
 		"psr-4": {
-			"Tweet\\": "tests/classes/Tweet/",
-			"Tweet\\Entity\\": "tests/classes/Tweet/Entity/"
+			"TestClasses\\": "tests/classes/"
+		}
+	},
+	"config": {
+		"allow-plugins": {
+			"symfony/flex": true
 		}
 	}
 }

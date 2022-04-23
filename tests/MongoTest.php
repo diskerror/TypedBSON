@@ -1,7 +1,10 @@
 <?php
 
-use function MongoDB\BSON\fromPHP;
+use Diskerror\TypedBSON\DateTime;
 use MongoDB\BSON\UTCDateTime;
+use TestClasses\MongoConfig;
+use TestClasses\Tweet;
+use function MongoDB\BSON\fromPHP;
 
 class MongoTest extends PHPUnit\Framework\TestCase
 {
@@ -25,7 +28,9 @@ class MongoTest extends PHPUnit\Framework\TestCase
 		);
 
 //		fwrite(STDERR, fromPHP($tweet->bsonSerialize()));exit;
-//		file_put_contents(__DIR__.'/results/mongo3.bson', fromPHP($tweet->bsonSerialize()));exit;
+//		file_put_contents(__DIR__.'/results/mongo3.json', json_encode($tweet->bsonSerialize(), JSON_PRETTY_PRINT));
+//		fwrite(STDERR, fromPHP($tweet->bsonSerialize()));exit;
+//		file_put_contents(__DIR__.'/results/mongo3.bson', fromPHP($tweet->bsonSerialize()));
 //		var_export($tweet->bsonSerialize());exit;
 //		file_put_contents(__DIR__.'/results/mongo3.php', var_export($tweet->bsonSerialize(), true));exit;
 		$this->assertStringEqualsFile(
@@ -78,20 +83,20 @@ class MongoTest extends PHPUnit\Framework\TestCase
 	public function testBsonDate()
 	{
 		$mbdt = new UTCDateTime(1561431851340);
-		$dt   = new \Diskerror\TypedBSON\DateTime(1561431851.34);
+		$dt   = new DateTime(1561431851.34);
 
 		$this->assertEquals(
-			$dt->format(\Diskerror\TypedBSON\DateTime::STRING_IO_FORMAT_MICRO),
-			$mbdt->toDateTime()->format(\Diskerror\TypedBSON\DateTime::STRING_IO_FORMAT_MICRO)
+			$dt->format(DateTime::STRING_IO_FORMAT_MICRO),
+			$mbdt->toDateTime()->format(DateTime::STRING_IO_FORMAT_MICRO)
 		);
 
 		$mbdt2 = new UTCDateTime(1561431851340);
-		$dt2   = new \Diskerror\TypedBSON\DateTime($mbdt2);
+		$dt2   = new DateTime($mbdt2);
 
 //		fwrite(STDERR, $dt2->__toString());exit;
 		$this->assertEquals(
-			$dt2->format(\Diskerror\TypedBSON\DateTime::STRING_IO_FORMAT_MICRO),
-			$mbdt2->toDateTime()->format(\Diskerror\TypedBSON\DateTime::STRING_IO_FORMAT_MICRO)
+			$dt2->format(DateTime::STRING_IO_FORMAT_MICRO),
+			$mbdt2->toDateTime()->format(DateTime::STRING_IO_FORMAT_MICRO)
 		);
 	}
 

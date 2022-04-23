@@ -1,5 +1,7 @@
 <?php
 
+use TestClasses\Tweet;
+
 class SerializeTest extends PHPUnit\Framework\TestCase
 {
 	public function testSerialize()
@@ -10,7 +12,7 @@ class SerializeTest extends PHPUnit\Framework\TestCase
 
 		$unserialized = unserialize($serialized);
 
-//		$this->assertTrue($tweet == $unserialized);
+		$this->assertTrue($tweet == $unserialized);
 		$this->assertFalse($tweet === $unserialized);
 	}
 

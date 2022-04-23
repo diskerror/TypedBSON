@@ -1,7 +1,8 @@
 <?php
 
-use Diskerror\Typed\TypedArray;
-use Diskerror\Typed\TypedClass;
+namespace TestClasses;
+
+use Diskerror\Typed\{TypedArray, TypedClass};
 
 class MongoIndexDef extends TypedClass
 {

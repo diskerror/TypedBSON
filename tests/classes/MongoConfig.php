@@ -1,5 +1,7 @@
 <?php
 
+namespace TestClasses;
+
 use Diskerror\Typed\TypedArray;
 use Diskerror\Typed\TypedClass;
 

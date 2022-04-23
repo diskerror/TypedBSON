@@ -20,13 +20,7 @@ trait TypedTrait
 	/**
 	 * @var BsonOptions
 	 */
-	protected $_bsonOptions;
-
-	/**
-	 * @var int
-	 */
-	protected $_bsonOptionDefaults =
-		BsonOptions::NO_CAST_BSON | BsonOptions::CAST_DATETIME_TO_UTC | BsonOptions::CAST_ID_TO_OBJECTID;
+	public $toBsonOptions;
 
 	/**
 	 * Initialize options for when this object is converted to an array.
@@ -34,6 +28,13 @@ trait TypedTrait
 	protected function _initArrayOptions()
 	{
 		parent::_initArrayOptions();
-		$this->_bsonOptions = new BsonOptions($this->_bsonOptionDefaults);
+		$this->toBsonOptions = new BsonOptions(
+			BsonOptions::NO_CAST_BSON | BsonOptions::CAST_DATETIME_TO_UTC | BsonOptions::CAST_ID_TO_OBJECTID
+		);
+	}
+
+	static protected function _isArrayOption(string $name): bool
+	{
+		return parent::_isArrayOption($name) || $name === 'toBsonOptions';
 	}
 }

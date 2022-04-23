@@ -1,21 +1,22 @@
 <?php
 
-namespace Tweet;
+namespace TestClasses\Tweet;
 
-//  Leave this mixed, Typed and TypedBSON
-class Place extends \Diskerror\Typed\TypedClass
+use Diskerror\TypedBSON\TypedClass;
+
+class Place extends TypedClass
 {
-	protected $id = 0;
+	protected $id           = 0;
 
-	protected $url = '';
+	protected $url          = '';
 
-	protected $place_type = '';
+	protected $place_type   = '';
 
-	protected $name = '';
+	protected $name         = '';
 
-	protected $full_name = '';
+	protected $full_name    = '';
 
 	protected $country_code = '';
 
-	protected $country = '';
+	protected $country      = '';
 }

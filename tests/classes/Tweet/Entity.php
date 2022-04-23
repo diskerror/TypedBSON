@@ -1,7 +1,8 @@
 <?php
 
-namespace TestClasses\Tweet\Entity;
+namespace TestClasses\Tweet;
 
+use TestClasses\Tweet\Entity\{Hashtag, Url, UserMention};
 use Diskerror\TypedBSON\{TypedClass, TypedArray};
 
 class Entity extends TypedClass

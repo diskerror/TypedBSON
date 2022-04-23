@@ -29,11 +29,13 @@ class TypedArray extends \Diskerror\Typed\TypedArray implements Persistable
 	 * If a derived class is instantiated then the data type must be contained in
 	 * the class, ie. "protected $_type = 'integer';", and $param1 can be the initial data.
 	 *
-	 * @param mixed             $param1 OPTIONAL ""
+	 * @param mixed $param1 OPTIONAL ""
 	 * @param array|object|null $param2 OPTIONAL null
 	 */
 	public function __construct($param1 = '', $param2 = null)
 	{
+		$this->_initArrayOptions();
+
 		if (get_called_class() === self::class) {
 			$this->_type = (string) $param1;
 			parent::__construct($param2);
@@ -47,16 +49,16 @@ class TypedArray extends \Diskerror\Typed\TypedArray implements Persistable
 	 * String representation of object.
 	 *
 	 * @link  https://php.net/manual/en/serializable.serialize.php
-	 * @return string the string representation of the object or null
+	 * @return ?array an array of the object or null
 	 */
-	public function serialize(): string
+	public function __serialize(): ?array
 	{
-		return serialize([
-			'_type'         => $this->_type,
-			'_arrayOptions' => $this->_arrayOptions,
-			'_jsonOptions'  => $this->_jsonOptions,
-			'_container'    => $this->_container,
-		]);
+		$ser = parent::__serialize();
+		if ($ser === null) {
+			return null;
+		}
+		$ser['toBsonOptions'] = $this->toBsonOptions->get();
+		return $ser;
 	}
 
 	/**
@@ -64,18 +66,14 @@ class TypedArray extends \Diskerror\Typed\TypedArray implements Persistable
 	 *
 	 * @link  https://php.net/manual/en/serializable.unserialize.php
 	 *
-	 * @param string $serialized The string representation of the object.
+	 * @param array $data The array representation of the object.
 	 *
 	 * @return void
 	 */
-	public function unserialize($serialized): void
+	public function __unserialize(array $data): void
 	{
-		$data = unserialize($serialized);
-
-		$this->_type         = $data['_type'];
-		$this->_arrayOptions = $data['_arrayOptions'];
-		$this->_jsonOptions  = $data['_jsonOptions'];
-		$this->_container    = $data['_container'];
+		parent::__unserialize($data);
+		$this->toBsonOptions = new BsonOptions($data['toBsonOptions']);
 	}
 
 	/**
@@ -85,7 +83,8 @@ class TypedArray extends \Diskerror\Typed\TypedArray implements Persistable
 	 */
 	public function bsonSerialize(): array
 	{
-		return $this->_toArray($this->_jsonOptions);
+		//	An array of BSON types is not predicted.
+		return $this->_toArray($this->toJsonOptions);
 	}
 
 	/**

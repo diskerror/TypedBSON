@@ -1,5 +1,7 @@
 <?php
 
+namespace TestClasses;
+
 use Diskerror\Typed\Scalar\TInteger;
 
 /**
@@ -21,7 +23,7 @@ class MongoIndexSort extends TInteger
 		parent::__construct($in, $allowNull);
 	}
 
-	public function set($in)
+	public function set($in): void
 	{
 		parent::set($in);
 

@@ -1,12 +1,12 @@
 <?php
 
-namespace Tweet\Entity;
+namespace TestClasses\Tweet\Entity;
 
-use Diskerror\Typed\{TypedArray, TypedClass};
+use Diskerror\TypedBSON\{TypedArray, TypedClass};
 
 class Hashtag extends TypedClass
 {
-	protected $text = '';
+	protected $text    = '';
 
 	protected $indices = [TypedArray::class, 'int'];
 }
