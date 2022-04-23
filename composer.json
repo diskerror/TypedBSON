@@ -29,7 +29,7 @@
 	"require": {
 		"php": ">=7.3",
 		"ext-json": "*",
-		"ext-mongodb": "^1.9",
+		"ext-mongodb": "^1.12",
 		"diskerror/typed": "0.8.4.*"
 	},
 	"require-dev": {
