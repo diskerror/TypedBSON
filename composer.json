@@ -20,12 +20,6 @@
 			"role": "Developer"
 		}
 	],
-	"repositories": [
-		{
-			"type": "git",
-			"url": "../Typed"
-		}
-	],
 	"require": {
 		"php": ">=7.3",
 		"ext-json": "*",
