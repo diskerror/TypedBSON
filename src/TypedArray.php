@@ -34,7 +34,7 @@ class TypedArray extends \Diskerror\Typed\TypedArray implements Persistable
 	 */
 	public function __construct($param1 = '', $param2 = null)
 	{
-		$this->_initArrayOptions();
+		$this->_initToArrayOptions();
 
 		if (get_called_class() === self::class) {
 			$this->_type = (string) $param1;
@@ -46,37 +46,6 @@ class TypedArray extends \Diskerror\Typed\TypedArray implements Persistable
 	}
 
 	/**
-	 * String representation of object.
-	 *
-	 * @link  https://php.net/manual/en/serializable.serialize.php
-	 * @return ?array an array of the object or null
-	 */
-	public function __serialize(): ?array
-	{
-		$ser = parent::__serialize();
-		if ($ser === null) {
-			return null;
-		}
-		$ser['toBsonOptions'] = $this->toBsonOptions->get();
-		return $ser;
-	}
-
-	/**
-	 * Constructs the object
-	 *
-	 * @link  https://php.net/manual/en/serializable.unserialize.php
-	 *
-	 * @param array $data The array representation of the object.
-	 *
-	 * @return void
-	 */
-	public function __unserialize(array $data): void
-	{
-		parent::__unserialize($data);
-		$this->toBsonOptions = new BsonOptions($data['toBsonOptions']);
-	}
-
-	/**
 	 * Called automatically by MongoDB.
 	 *
 	 * @return array
@@ -84,7 +53,7 @@ class TypedArray extends \Diskerror\Typed\TypedArray implements Persistable
 	public function bsonSerialize(): array
 	{
 		//	An array of BSON types is not predicted.
-		return $this->_toArray($this->toJsonOptions);
+		return $this->jsonSerialize();
 	}
 
 	/**
@@ -94,7 +63,7 @@ class TypedArray extends \Diskerror\Typed\TypedArray implements Persistable
 	 */
 	public function bsonUnserialize(array $data)
 	{
-		$this->_initArrayOptions();
+		$this->_initToArrayOptions();
 		$this->assign($data);
 	}
 }

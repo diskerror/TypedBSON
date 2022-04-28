@@ -25,16 +25,12 @@ trait TypedTrait
 	/**
 	 * Initialize options for when this object is converted to an array.
 	 */
-	protected function _initArrayOptions()
+	protected function _initToArrayOptions()
 	{
-		parent::_initArrayOptions();
+		$this->_optionList[] = 'toBsonOptions';
+		parent::_initToArrayOptions();
 		$this->toBsonOptions = new BsonOptions(
-			BsonOptions::NO_CAST_BSON | BsonOptions::CAST_DATETIME_TO_UTC | BsonOptions::CAST_ID_TO_OBJECTID
+			BsonOptions::OMIT_EMPTY | BsonOptions::NO_CAST_BSON | BsonOptions::CAST_DATETIME_TO_UTC | BsonOptions::CAST_ID_TO_OBJECTID
 		);
-	}
-
-	static protected function _isArrayOption(string $name): bool
-	{
-		return parent::_isArrayOption($name) || $name === 'toBsonOptions';
 	}
 }

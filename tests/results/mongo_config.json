@@ -26,14 +26,12 @@
 			{
 				"keys": {
 					"received_on": 1
-				},
-				"options": []
+				}
 			},
 			{
 				"keys": {
 					"errors": 1
-				},
-				"options": []
+				}
 			}
 		],
 		"error_message": [
@@ -48,14 +46,12 @@
 			{
 				"keys": {
 					"message": 1
-				},
-				"options": []
+				}
 			},
 			{
 				"keys": {
 					"code": 1
-				},
-				"options": []
+				}
 			}
 		]
 	}

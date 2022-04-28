@@ -1,5 +1,3 @@
 {
-	"host": "mongodb:\/\/localhost",
-	"database": "",
-	"collections": []
+	"host": "mongodb:\/\/localhost"
 }

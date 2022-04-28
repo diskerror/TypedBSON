@@ -11,12 +11,12 @@
 namespace Diskerror\TypedBSON;
 
 use DateTimeInterface;
-use Diskerror\Typed\ArrayOptions;
 use Diskerror\Typed\Date;
 use MongoDB\BSON\ObjectId;
+use MongoDB\BSON\Persistable;
 use MongoDB\BSON\UTCDateTime;
 
-abstract class TypedClass extends \Diskerror\Typed\TypedClass
+abstract class TypedClass extends \Diskerror\Typed\TypedClass implements Persistable
 {
 	use TypedTrait;
 
@@ -27,60 +27,71 @@ abstract class TypedClass extends \Diskerror\Typed\TypedClass
 	 */
 	public function bsonSerialize(): array
 	{
-		$arr = $this->_toArray($this->toJsonOptions);
+		$omitEmpty       = $this->toBsonOptions->has(BsonOptions::OMIT_EMPTY);
+		$omitDefaults    = $this->toBsonOptions->has(BsonOptions::OMIT_DEFAULTS);
+		$objectsToString = $this->toBsonOptions->has(BsonOptions::ALL_OBJECTS_TO_STRING);
+		$noCastBson      = $this->toBsonOptions->has(BsonOptions::NO_CAST_BSON);
+		$dateToUTC       = $this->toBsonOptions->has(BsonOptions::CAST_DATETIME_TO_UTC);
+		$idToObjectId    = $this->toBsonOptions->has(BsonOptions::CAST_ID_TO_OBJECTID);
 
-		foreach ($this->getPublicNames() as $k) {
-			/**
-			 * Always deep bsonSerialize when possible.
-			 */
-			if (method_exists($this->{$k}, 'bsonSerialize')) {
-				$r = $this->{$k}->bsonSerialize();
+		$arr = [];
+		foreach ($this->getPublicNames() as $pName) {
+			$v = $this->_getByName($pName);    //  AtomicInterface objects are returned as scalars.
 
-				if (
-					$this->toJsonOptions->has(ArrayOptions::OMIT_EMPTY) &&
-					(empty($r) || (is_object($r) && empty((array) $r)))
-				) {
-					if (key_exists($k, $arr)) {
-						unset($arr[$k]);
+			if ($omitDefaults && $this->$pName == $this->_defaultValues[$pName]) {
+				continue;
+			}
+
+			switch (gettype($v)) {
+				case 'resource':
+					continue 2;
+
+				case 'object':
+					switch (true) {
+						case $noCastBson && strpos(get_class($v), 'MongoDB\\BSON') === 0:
+							break;
+
+						case method_exists($v, 'bsonSerialize'):
+							$v = $v->bsonSerialize();
+							break;
+
+						case method_exists($v, 'toArray'):
+							$v = $v->toArray();
+							break;
+
+						case $dateToUTC && $v instanceof DateTimeInterface && !($this->$pName instanceof Date):
+							$v = $dateToUTC ?
+								new UTCDateTime($v) :
+								$v->format('Y-m-d\TH:i:sP'); // this format for JSON, explicit for 7.1 compat
+							break;
+
+						case $objectsToString && method_exists($v, '__toString'):
+							$v = $v->__toString();
+							break;
 					}
-					continue;
-				}
+					break;
 
-				$arr[$k] = $r;
+				//	nulls, bools, ints, floats, strings, and arrays
+				default:
 			}
 
-			/**
-			 * MongoDB\BSON objects were converted above so put them back.
-			 */
-			if (
-				$this->toBsonOptions->has(BsonOptions::NO_CAST_BSON) &&
-				is_object($this->{$k}) &&
-				strpos(get_class($this->{$k}), 'MongoDB\\BSON') === 0
-			) {
-				$arr[$k] = $this->{$k};
+			if ($omitEmpty && self::_isEmpty($v)) {
+				continue;
 			}
 
-			/**
-			 * Convert all DateTimeInterface classes (except Typed\Date) into a UTCDateTime class.
-			 */
-			if (
-				$this->toBsonOptions->has(BsonOptions::CAST_DATETIME_TO_UTC) &&
-				$this->{$k} instanceof DateTimeInterface &&
-				!($this->{$k} instanceof Date)
-			) {
-				$arr[$k] = new UTCDateTime($this->{$k});
-			}
+			$arr[$pName] = $v;
 		}
 
 		/**
 		 * Cast "_id" string or number into a MongoDB\BSON\ObjectId.
 		 */
-		if (
-			$this->toBsonOptions->has(BsonOptions::CAST_ID_TO_OBJECTID) &&
-			property_exists($this, '_id') &&
-			is_scalar($this->_id)
-		) {
-			$arr['_id'] = new ObjectId((string) $this->_id);
+		if ($idToObjectId && property_exists($this, '_id') && is_scalar($this->_id)) {
+			if ($this->_id == 0) {
+				$arr['_id'] = new ObjectId();
+			}
+			else {
+				$arr['_id'] = new ObjectId((string) $arr['_id']);
+			}
 		}
 
 		return $arr;
@@ -98,7 +109,7 @@ abstract class TypedClass extends \Diskerror\Typed\TypedClass
 	 */
 	public function bsonUnserialize(array $data): void
 	{
-		$this->_initArrayOptions();
+		$this->_initToArrayOptions();
 		$this->_initMetaData();
 		$this->_initProperties();
 		foreach ($this->getPublicNames() as $publicName) {
