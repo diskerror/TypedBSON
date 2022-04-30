@@ -9,6 +9,8 @@
 
 namespace Diskerror\TypedBSON;
 
+use DateTimeInterface;
+use Diskerror\Typed\AtomicInterface;
 use MongoDB\BSON\Persistable;
 
 /**
@@ -52,8 +54,47 @@ class TypedArray extends \Diskerror\Typed\TypedArray implements Persistable
 	 */
 	public function bsonSerialize(): array
 	{
+		$output = [];
+
+		//	At this point all items are some type of object.
+		if (is_a($this->_type, AtomicInterface::class, true)) {
+			foreach ($this->_container as $k => $v) {
+				$output[$k] = $v->get();
+			}
+		}
 		//	An array of BSON types is not predicted.
-		return $this->jsonSerialize();
+		elseif (method_exists($this->_type, 'bsonSerialize')) {
+			foreach ($this->_container as $k => $v) {
+				$output[$k] = $v->bsonSerialize();
+			}
+		}
+		elseif (method_exists($this->_type, 'toArray')) {
+			foreach ($this->_container as $k => $v) {
+				$output[$k] = $v->toArray();
+			}
+		}
+		elseif (is_a($this->_type, DateTimeInterface::class, true)) {
+			foreach ($this->_container as $k => $v) {
+				$output[$k] = $v->format(DateTimeInterface::ATOM);
+			}
+		}
+		elseif (method_exists($this->_type, '__toString')) {
+			foreach ($this->_container as $k => $v) {
+				$output[$k] = $v->__toString();
+			}
+		}
+		else {
+			//	else this is an array of some generic objects
+			foreach ($this->_container as $k => $v) {
+				$output[$k] = (array) $v;
+			}
+		}
+
+		if ($this->toJsonOptions->has(BsonOptions::OMIT_EMPTY)) {
+			self::_removeEmpty($output);
+		}
+
+		return $output;
 	}
 
 	/**

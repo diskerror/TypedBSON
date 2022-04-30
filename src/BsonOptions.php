@@ -24,17 +24,8 @@ class BsonOptions extends Options
 	const ALL_OBJECTS_TO_STRING = 4;
 
 	/**
-	 * Leave MongoDB\BSON instances alone, don't convert to string.
+	 * Cast member with the name "_id" into MongoDB\BSON\ObjectId.
 	 */
-	const NO_CAST_BSON = 8;
-
-	/**
-	 * Cast all DateTimeInterface objects to UTCDateTime.
-	 */
-	const CAST_DATETIME_TO_UTC = 16;
-
-	/**
-	 * Cast member with the name "_id" into MongoDB\BSON\ObjectId when doing bsonSerialize().
-	 */
-	const CAST_ID_TO_OBJECTID = 32;
+	const CAST_ID_TO_OBJECTID = 8;
 }
+

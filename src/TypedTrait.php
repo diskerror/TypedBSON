@@ -30,7 +30,7 @@ trait TypedTrait
 		$this->_optionList[] = 'toBsonOptions';
 		parent::_initToArrayOptions();
 		$this->toBsonOptions = new BsonOptions(
-			BsonOptions::OMIT_EMPTY | BsonOptions::NO_CAST_BSON | BsonOptions::CAST_DATETIME_TO_UTC | BsonOptions::CAST_ID_TO_OBJECTID
+			BsonOptions::OMIT_EMPTY | BsonOptions::CAST_ID_TO_OBJECTID
 		);
 	}
 }

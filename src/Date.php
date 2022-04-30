@@ -1,16 +1,22 @@
 <?php
 
-
 namespace Diskerror\TypedBSON;
 
+use MongoDB\BSON\Serializable;
+use MongoDB\BSON\Unserializable;
 
-class Date extends \Diskerror\Typed\Date
+class Date extends \Diskerror\Typed\Date implements Serializable, Unserializable
 {
-	public function __construct($time = 'now', $timezone = null)
+	use DateTrait;
+
+	public function bsonSerialize()
 	{
-		$this->_initCheckBson($time);
-		parent::__construct($time, $timezone);
+		return [$this->format('Y-m-d')];
 	}
 
-	use DateTrait;
+	public function bsonUnserialize(array $data)
+	{
+		list($year, $month, $day) = explode('-', $data[0]);
+		$this->setDate($year, $month, $day);
+	}
 }

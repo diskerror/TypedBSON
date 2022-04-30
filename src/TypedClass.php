@@ -30,17 +30,15 @@ abstract class TypedClass extends \Diskerror\Typed\TypedClass implements Persist
 		$omitEmpty       = $this->toBsonOptions->has(BsonOptions::OMIT_EMPTY);
 		$omitDefaults    = $this->toBsonOptions->has(BsonOptions::OMIT_DEFAULTS);
 		$objectsToString = $this->toBsonOptions->has(BsonOptions::ALL_OBJECTS_TO_STRING);
-		$noCastBson      = $this->toBsonOptions->has(BsonOptions::NO_CAST_BSON);
-		$dateToUTC       = $this->toBsonOptions->has(BsonOptions::CAST_DATETIME_TO_UTC);
 		$idToObjectId    = $this->toBsonOptions->has(BsonOptions::CAST_ID_TO_OBJECTID);
 
 		$arr = [];
 		foreach ($this->getPublicNames() as $pName) {
-			$v = $this->_getByName($pName);    //  AtomicInterface objects are returned as scalars.
-
 			if ($omitDefaults && $this->$pName == $this->_defaultValues[$pName]) {
 				continue;
 			}
+
+			$v = $this->_getByName($pName);    //  AtomicInterface objects are returned as scalars.
 
 			switch (gettype($v)) {
 				case 'resource':
@@ -48,21 +46,19 @@ abstract class TypedClass extends \Diskerror\Typed\TypedClass implements Persist
 
 				case 'object':
 					switch (true) {
-						case $noCastBson && strpos(get_class($v), 'MongoDB\\BSON') === 0:
+						case strpos(get_class($v), 'MongoDB\\BSON') === 0:
 							break;
 
 						case method_exists($v, 'bsonSerialize'):
 							$v = $v->bsonSerialize();
 							break;
 
-						case method_exists($v, 'toArray'):
-							$v = $v->toArray();
+						case method_exists($v, 'jsonSerialize'):
+							$v = $v->jsonSerialize();
 							break;
 
-						case $dateToUTC && $v instanceof DateTimeInterface && !($this->$pName instanceof Date):
-							$v = $dateToUTC ?
-								new UTCDateTime($v) :
-								$v->format('Y-m-d\TH:i:sP'); // this format for JSON, explicit for 7.1 compat
+						case method_exists($v, 'toArray'):
+							$v = $v->toArray();
 							break;
 
 						case $objectsToString && method_exists($v, '__toString'):
