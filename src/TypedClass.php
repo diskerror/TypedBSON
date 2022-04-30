@@ -29,8 +29,8 @@ abstract class TypedClass extends \Diskerror\Typed\TypedClass implements Persist
 	{
 		$omitEmpty       = $this->toBsonOptions->has(BsonOptions::OMIT_EMPTY);
 		$omitDefaults    = $this->toBsonOptions->has(BsonOptions::OMIT_DEFAULTS);
+		$dateToString    = $this->toBsonOptions->has(BsonOptions::DATE_OBJECT_TO_STRING);
 		$objectsToString = $this->toBsonOptions->has(BsonOptions::ALL_OBJECTS_TO_STRING);
-		$idToObjectId    = $this->toBsonOptions->has(BsonOptions::CAST_ID_TO_OBJECTID);
 
 		$arr = [];
 		foreach ($this->getPublicNames() as $pName) {
@@ -51,6 +51,10 @@ abstract class TypedClass extends \Diskerror\Typed\TypedClass implements Persist
 
 						case method_exists($v, 'bsonSerialize'):
 							$v = $v->bsonSerialize();
+							break;
+
+						case $dateToString && is_a($v, \Diskerror\Typed\DateTime::class, true):
+							$v = $v->jsonSerialize();
 							break;
 
 						case method_exists($v, 'jsonSerialize'):
@@ -81,8 +85,11 @@ abstract class TypedClass extends \Diskerror\Typed\TypedClass implements Persist
 		/**
 		 * Cast "_id" string or number into a MongoDB\BSON\ObjectId.
 		 */
-		if ($idToObjectId && property_exists($this, '_id') && is_scalar($this->_id)) {
-			if ($this->_id == 0) {
+		if (
+			$this->toBsonOptions->has(BsonOptions::CAST_ID_TO_OBJECTID) &&
+			array_key_exists('_id', $arr) && is_scalar($arr['_id'])
+		) {
+			if ($arr['_id'] == 0) {
 				$arr['_id'] = new ObjectId();
 			}
 			else {
@@ -108,8 +115,6 @@ abstract class TypedClass extends \Diskerror\Typed\TypedClass implements Persist
 		$this->_initToArrayOptions();
 		$this->_initMetaData();
 		$this->_initProperties();
-		foreach ($this->getPublicNames() as $publicName) {
-			$this->_setByName($publicName, array_key_exists($publicName, $data) ? $data[$publicName] : '');
-		}
+		$this->replace($data);
 	}
 }

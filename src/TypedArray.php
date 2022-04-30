@@ -9,8 +9,8 @@
 
 namespace Diskerror\TypedBSON;
 
-use DateTimeInterface;
 use Diskerror\Typed\AtomicInterface;
+use MongoDB\BSON\ObjectId;
 use MongoDB\BSON\Persistable;
 
 /**
@@ -57,12 +57,13 @@ class TypedArray extends \Diskerror\Typed\TypedArray implements Persistable
 		$output = [];
 
 		//	At this point all items are some type of object.
+		//	An array of BSON types is not predicted.
 		if (is_a($this->_type, AtomicInterface::class, true)) {
 			foreach ($this->_container as $k => $v) {
 				$output[$k] = $v->get();
 			}
 		}
-		//	An array of BSON types is not predicted.
+		//	Our TypedBSON\DateTime classes are handled here.
 		elseif (method_exists($this->_type, 'bsonSerialize')) {
 			foreach ($this->_container as $k => $v) {
 				$output[$k] = $v->bsonSerialize();
@@ -73,24 +74,49 @@ class TypedArray extends \Diskerror\Typed\TypedArray implements Persistable
 				$output[$k] = $v->toArray();
 			}
 		}
-		elseif (is_a($this->_type, DateTimeInterface::class, true)) {
-			foreach ($this->_container as $k => $v) {
-				$output[$k] = $v->format(DateTimeInterface::ATOM);
+		//	Other DateTime and Typed\DateTime classes are handled here.
+		elseif (is_a($this->_type, \Diskerror\Typed\DateTime::class, true)) {
+			if ($this->toBsonOptions->has(BsonOptions::DATE_OBJECT_TO_STRING)) {
+				foreach ($this->_container as $k => $v) {
+					$output[$k] = $v->jsonSerialize();
+				}
+			}
+			else {
+				foreach ($this->_container as $k => $v) {
+					$output[$k] = $v;
+				}
 			}
 		}
-		elseif (method_exists($this->_type, '__toString')) {
+		elseif (
+			$this->toBsonOptions->has(BsonOptions::ALL_OBJECTS_TO_STRING) &&
+			method_exists($this->_type, '__toString')
+		) {
 			foreach ($this->_container as $k => $v) {
 				$output[$k] = $v->__toString();
 			}
 		}
 		else {
-			//	else this is an array of some generic objects
 			foreach ($this->_container as $k => $v) {
-				$output[$k] = (array) $v;
+				$output[$k] = $v;
 			}
 		}
 
-		if ($this->toJsonOptions->has(BsonOptions::OMIT_EMPTY)) {
+		/**
+		 * Cast "_id" string or number into a MongoDB\BSON\ObjectId.
+		 */
+		if (
+			$this->toBsonOptions->has(BsonOptions::CAST_ID_TO_OBJECTID) &&
+			array_key_exists('_id', $output) && is_scalar($output['_id'])
+		) {
+			if ($output['_id'] == 0) {
+				$output['_id'] = new ObjectId();
+			}
+			else {
+				$output['_id'] = new ObjectId((string) $output['_id']);
+			}
+		}
+
+		if ($this->toBsonOptions->has(BsonOptions::OMIT_EMPTY)) {
 			self::_removeEmpty($output);
 		}
 
@@ -98,13 +124,12 @@ class TypedArray extends \Diskerror\Typed\TypedArray implements Persistable
 	}
 
 	/**
-	 * Called automatically by MongoDB when a document has a field named "__pclass".
 	 *
 	 * @param array $data
 	 */
 	public function bsonUnserialize(array $data)
 	{
 		$this->_initToArrayOptions();
-		$this->assign($data);
+		$this->replace($data);
 	}
 }
