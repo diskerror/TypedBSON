@@ -10,11 +10,8 @@
 
 namespace Diskerror\TypedBSON;
 
-use DateTimeInterface;
-use Diskerror\Typed\Date;
 use MongoDB\BSON\ObjectId;
 use MongoDB\BSON\Persistable;
-use MongoDB\BSON\UTCDateTime;
 
 abstract class TypedClass extends \Diskerror\Typed\TypedClass implements Persistable
 {

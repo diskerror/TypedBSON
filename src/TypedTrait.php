@@ -20,15 +20,15 @@ trait TypedTrait
 	/**
 	 * @var BsonOptions
 	 */
-	public $toBsonOptions;
+	protected $toBsonOptions;
 
 	/**
 	 * Initialize options for when this object is converted to an array.
 	 */
 	protected function _initToArrayOptions()
 	{
-		$this->_optionList[] = 'toBsonOptions';
 		parent::_initToArrayOptions();
+		$this->_optionList[] = 'toBsonOptions';
 		$this->toBsonOptions = new BsonOptions(BsonOptions::OMIT_EMPTY);
 	}
 }
