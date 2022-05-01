@@ -29,8 +29,6 @@ trait TypedTrait
 	{
 		$this->_optionList[] = 'toBsonOptions';
 		parent::_initToArrayOptions();
-		$this->toBsonOptions = new BsonOptions(
-			BsonOptions::OMIT_EMPTY | BsonOptions::CAST_ID_TO_OBJECTID
-		);
+		$this->toBsonOptions = new BsonOptions(BsonOptions::OMIT_EMPTY);
 	}
 }
