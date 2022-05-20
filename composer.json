@@ -20,17 +20,11 @@
 			"role": "Developer"
 		}
 	],
-	"repositories": [
-		{
-			"type": "path",
-			"url": "../Typed"
-		}
-	],
 	"require": {
 		"php": ">=7.2 <8.1",
 		"ext-json": "*",
 		"ext-mongodb": "~1.12",
-		"diskerror/typed": "dev-php73"
+		"diskerror/typed": "~0.8.6.1"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "~8.5.26",

@@ -10,6 +10,7 @@
 
 namespace Diskerror\TypedBSON;
 
+use Diskerror\Typed\AtomicInterface;
 use MongoDB\BSON\ObjectId;
 use MongoDB\BSON\Persistable;
 
@@ -31,11 +32,11 @@ abstract class TypedClass extends \Diskerror\Typed\TypedClass implements Persist
 
 		$arr = [];
 		foreach ($this->getPublicNames() as $pName) {
-			if ($omitDefaults && $this->$pName == $this->_defaultValues[$pName]) {
+			$v = $this->$pName;
+
+			if ($omitDefaults && $v == $this->_defaultValues[$pName]) {
 				continue;
 			}
-
-			$v = $this->_getByName($pName);    //  AtomicInterface objects are returned as scalars.
 
 			switch (gettype($v)) {
 				case 'resource':
@@ -43,6 +44,10 @@ abstract class TypedClass extends \Diskerror\Typed\TypedClass implements Persist
 
 				case 'object':
 					switch (true) {
+						case $v instanceof AtomicInterface:
+							$v = $v->get();
+							break;
+
 						case strpos(get_class($v), 'MongoDB\\BSON') === 0:
 							break;
 
