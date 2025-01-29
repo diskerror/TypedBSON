@@ -33,4 +33,3 @@ class BsonOptions extends Options
 	 */
 	const CAST_ID_TO_OBJECTID = 16;
 }
-
